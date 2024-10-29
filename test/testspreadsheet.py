@@ -4,6 +4,26 @@ from spreadsheet import SpreadSheet
 
 class TestSpreadSheet(TestCase):
 
+    def test_evaluate_formula_with_arithmetic_operator_sum_mult(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=1+3*2")
+        self.assertEqual(7, spreadsheet.evaluate("A1"))
+
+    def test_evaluate_formula_with_arithmetic_operator_division_by_zero(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=1/0")
+        self.assertEqual("#Error", spreadsheet.evaluate("A1"))
+
+    def test_evaluate_formula_with_arithmetic_operator_sum_and_bad_integer(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=1+3.5")
+        self.assertEqual("#Error", spreadsheet.evaluate("A1"))
+
+    def test_evaluate_formula_with_arithmetic_operator_sum(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=1+3")
+        self.assertEqual(4, spreadsheet.evaluate("A1"))
+
     def test_evaluate_formula_reference_circular(self):
         spreadsheet = SpreadSheet()
         spreadsheet.set("A1",    "=B1")

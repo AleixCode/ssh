@@ -18,16 +18,23 @@ class SpreadSheet:
         visited.add(cell)
         value = self.get(cell)
         if value.startswith("="):
-            if len(value) > 1 and value[1:].isdigit():
-                return int(value[1:])
-            elif len(value) > 2 and value[1] == "'" and value[-1] == "'":
-                return value[2:-1]
+            try:
+                return eval(value[1:], {"__builtins__": None}, self._cells)
+            except ZeroDivisionError:
+                return "#Error"
+            except:
+                return "#Error"
+        elif value.startswith("'"):
+            if value.endswith("'"):
+                return value[1:-1]
             else:
-                return self.evaluate(value[1:], visited)
-        elif value.isdigit():
-            return int(value)
-        elif len(value) > 2 and value[0] == "'" and value[-1] == "'":
-            return value[1:-1]
+                return "#Error"
         else:
-            return "#Error"
+            try:
+                if '.' in value:
+                    return float(value)
+                else:
+                    return int(value)
+            except ValueError:
+                return "#Error"
 
