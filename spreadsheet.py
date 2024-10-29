@@ -10,26 +10,24 @@ class SpreadSheet:
     def get(self, cell: str) -> str:
         return self._cells.get(cell, '')
 
-    def evaluate(self, cell: str) -> int | str:
+    def evaluate(self, cell: str, visited=None) -> int | str:
+        if visited is None:
+            visited = set()
+        if cell in visited:
+            return "#Circular"
+        visited.add(cell)
         value = self.get(cell)
         if value.startswith("="):
-            try:
-                if value[1:].startswith("'") and value[1:].endswith("'"):
-                    return value[2:-1]
-                elif value[1:].isdigit():
-                    return int(value[1:])
-                else:
-                    ref_value = self.evaluate(value[1:])
-                    if isinstance(ref_value, int):
-                        return ref_value
-                    else:
-                        return "#Circular" if ref_value == value else "#Error"
-            except ValueError:
-                return "#Error"
-        elif value.startswith("'") and value.endswith("'"):
-            return value[1:-1]
+            if len(value) > 1 and value[1:].isdigit():
+                return int(value[1:])
+            elif len(value) > 2 and value[1] == "'" and value[-1] == "'":
+                return value[2:-1]
+            else:
+                return self.evaluate(value[1:], visited)
         elif value.isdigit():
             return int(value)
+        elif len(value) > 2 and value[0] == "'" and value[-1] == "'":
+            return value[1:-1]
         else:
             return "#Error"
 
