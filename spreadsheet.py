@@ -15,5 +15,8 @@ class SpreadSheet:
         try:
             return int(value)
         except ValueError:
-            return "#Error"
+            if value.startswith("'") and value.endswith("'"):
+                return value[1:-1]
+            else:
+                return "#Error"
 

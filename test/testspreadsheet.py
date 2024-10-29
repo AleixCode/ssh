@@ -4,6 +4,26 @@ from spreadsheet import SpreadSheet
 
 class TestSpreadSheet(TestCase):
 
+    def test_evaluate_invalid_string_2(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("B1", "Apple'")
+        # Evaluate matching quotes
+        self.assertEqual("#Error", spreadsheet.evaluate("B1"))
+
+    def test_evaluate_invalid_string(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("B1", "'Apple")
+        # Evaluate matching quotes
+        self.assertEqual("#Error", spreadsheet.evaluate("B1"))
+
+
+    def test_evaluate_valid_string(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("B1", "'Apple'")
+        # Evaluate a given cell (e.g., the evaluation of "A1" is "42").
+        self.assertEqual("Apple", spreadsheet.evaluate("B1"))
+
+
     def test_evaluate_invalid_integer(self):
         spreadsheet = SpreadSheet()
         spreadsheet.set("B1", "4.2")
