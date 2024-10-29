@@ -4,6 +4,25 @@ from spreadsheet import SpreadSheet
 
 class TestSpreadSheet(TestCase):
 
+    def test_evaluate_formula_reference_circular(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=B1")
+        spreadsheet.set("B1", "=A1")
+        self.assertEqual("#Circular", spreadsheet.evaluate("A1"))
+
+    def test_evaluate_formula_reference_bad_integer(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=B1")
+        spreadsheet.set("B1", "42.5")
+        self.assertEqual("#Error", spreadsheet.evaluate("A1"))
+
+    def test_evaluate_formula_reference_integer(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1",    "=B1")
+        spreadsheet.set("B1", "42")
+        self.assertEqual(42, spreadsheet.evaluate("A1"))
+
+
     def test_evaluate_formula_string(self):
         spreadsheet = SpreadSheet()
         spreadsheet.set("A1",   "='Apple'")

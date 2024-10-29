@@ -16,8 +16,14 @@ class SpreadSheet:
             try:
                 if value[1:].startswith("'") and value[1:].endswith("'"):
                     return value[2:-1]
-                else:
+                elif value[1:].isdigit():
                     return int(value[1:])
+                else:
+                    ref_value = self.evaluate(value[1:])
+                    if isinstance(ref_value, int):
+                        return ref_value
+                    else:
+                        return "#Circular" if ref_value == value else "#Error"
             except ValueError:
                 return "#Error"
         elif value.startswith("'") and value.endswith("'"):
